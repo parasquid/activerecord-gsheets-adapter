@@ -1,4 +1,4 @@
-module Activerecord
+module ActiveRecord
   module Gsheets
     module Adapter
       VERSION = "0.1.0"

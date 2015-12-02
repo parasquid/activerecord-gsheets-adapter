@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'activerecord/gsheets/adapter/version'
+require 'active_record/gsheets/adapter/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "activerecord-gsheets-adapter"
-  spec.version       = Activerecord::Gsheets::Adapter::VERSION
+  spec.version       = ActiveRecord::Gsheets::Adapter::VERSION
   spec.authors       = ["parasquid"]
   spec.email         = ["tristan.gomez@gmail.com"]
 
