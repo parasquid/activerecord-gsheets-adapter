@@ -42,7 +42,9 @@ module Gsheets
         [
           "https://www.googleapis.com/auth/drive",
           "https://www.googleapis.com/auth/drive.file",
-          "https://www.googleapis.com/auth/drive.metadata"
+          "https://www.googleapis.com/auth/drive.metadata",
+          "https://spreadsheets.google.com/feeds",
+          "https://docs.google.com/feeds"
         ]
       end
 

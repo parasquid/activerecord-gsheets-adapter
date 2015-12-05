@@ -28,10 +28,11 @@ Use it just like any other ActiveRecord adapter, with a few caveats.
 
 | RDBMS    | Google Sheets |
 |----------|---------------|
-| database | document      |
-| table    | sheet         |
-| row      | table_row + 1 |
-| column   | table_row[0]  |
+| database | spreadsheet   |
+| table    | worksheet     |
+| row      | list_row + 1  |
+| column   | list_row[0]   |
+|          | cell          |
 
 We're using the first row of the sheet as the column headers.
 
