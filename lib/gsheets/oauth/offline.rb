@@ -3,25 +3,48 @@ require 'signet/oauth_2/client'
 module Gsheets
   module Oauth
     class Offline
-      attr_reader :client_id, :client_secret, :scope
+      attr_reader :client_id, :client_secret, :scope, :signet_client
 
-      def initialize(client_id, client_secret, scope: 'https://www.googleapis.com/auth/drive', signet: nil)
+      def initialize(
+        client_id,
+        client_secret,
+        scope: default_scopes,
+        signet_client: nil
+      )
         @client_id = client_id
         @client_secret = client_secret
         @scope = scope
-        @client = signet || get_signet_client
+        @signet_client = signet_client || get_signet_client
       end
 
       def get_authentication_uri
-        @client.authorization_uri
+        @signet_client.authorization_uri
       end
 
-      def get_access_token(authentication_code:)
-        @client.code = authentication_code
-        token_hash = @client.fetch_access_token!
+      def get_access_token(authentication_code: nil, refresh_token: nil)
+        error_message = "you must provide either an authentication_code or refresh_token".freeze
+        raise ArgumentError, error_message if authentication_code.nil? && refresh_token.nil?
+        @signet_client.code = authentication_code if authentication_code
+        @signet_client.refresh_token = refresh_token if refresh_token
+        @signet_client.fetch_access_token!
+        @signet_client.access_token
+      end
+
+      def get_refresh_token(authentication_code:)
+        @signet_client.code = authentication_code
+        @signet_client.fetch_access_token!
+        @signet_client.refresh_token
       end
 
       private
+
+      def default_scopes
+        [
+          "https://www.googleapis.com/auth/drive",
+          "https://www.googleapis.com/auth/drive.file",
+          "https://www.googleapis.com/auth/drive.metadata"
+        ]
+      end
 
       def get_signet_client
         Signet::OAuth2::Client.new(

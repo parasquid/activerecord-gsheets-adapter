@@ -20,26 +20,46 @@ describe Gsheets::Oauth::Offline do
       Then { authentication_uri.query.include? "client_id=test_client_id" }
     end
 
-    Given(:access_token) {
-      {
-        "access_token"=>"access_token",
-        "token_type"=>"Bearer",
-        "expires_in"=>3600,
-        "refresh_token"=>"refresh_token"
-      }
+    Given(:signet_spy) {
+      double(
+        "Signet::OAuth2::Client",
+        "code=" => nil,
+        "refresh_token=" => nil,
+        "refresh_token" => "refresh_token",
+        "fetch_access_token!" => {refresh_token: "refresh_token"},
+        "access_token" => "access_token"
+      )
     }
-    Given(:signet_spy) { double("Signet::OAuth2::Client", "code=" => nil, "fetch_access_token!" => access_token) }
 
-    context "getting the access token" do
-      Given(:authenticator) { oauth_class.new(client_id, client_secret, signet: signet_spy) }
-      Given(:authentication_code) { "code" }
-      When(:access_token_hash) { authenticator.get_access_token(authentication_code: authentication_code) }
-      Then { expect(signet_spy).to have_received(:code=).with(authentication_code) }
-      Then { expect(signet_spy).to have_received(:fetch_access_token!) }
-      Then { access_token_hash["access_token"] == "access_token" }
-      Then { access_token_hash["token_type"] == "Bearer" }
-      Then { access_token_hash["expires_in"] == 3600 }
-      Then { access_token_hash["refresh_token"] == "refresh_token" }
+    context "getting tokens" do
+      Given(:authenticator) { oauth_class.new(client_id, client_secret, signet_client: signet_spy) }
+
+      context "authentication_code is given" do
+        Given(:authentication_code) { "code" }
+        When(:access_token) { authenticator.get_access_token(authentication_code: authentication_code) }
+        Then { expect(signet_spy).to have_received(:code=).with(authentication_code) }
+        Then { expect(signet_spy).to have_received(:fetch_access_token!) }
+        Then { access_token == "access_token" }
+      end
+
+      context "refresh_token is given" do
+        Given(:refresh_token) { "refresh_token" }
+        When(:access_token) { authenticator.get_access_token(refresh_token: refresh_token) }
+        Then { expect(signet_spy).to have_received(:refresh_token=).with(refresh_token) }
+        Then { expect(signet_spy).to have_received(:fetch_access_token!) }
+        Then { access_token == "access_token" }
+      end
+
+      context "no authentication code provided" do
+        When(:access_token) { authenticator.get_access_token() }
+        Then { expect(access_token).to have_failed(ArgumentError, /provide/) }
+      end
+
+      context "getting the refresh_token" do
+        Given(:authentication_code) { "code" }
+        When(:refresh_token) { authenticator.get_refresh_token(authentication_code: authentication_code) }
+        Then { refresh_token == "refresh_token" }
+      end
     end
   end
 end

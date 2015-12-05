@@ -7,5 +7,5 @@ task :default => :spec
 
 desc "Open an irb session preloaded with this library"
 task :console do
-  system "irb -rubygems -I lib/active_record/gsheets -r oauth.rb"
+  system "irb -rubygems -I lib/gsheets/oauth -r offline.rb"
 end

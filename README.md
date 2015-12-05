@@ -40,13 +40,29 @@ We're using the first row of the sheet as the column headers.
 In order to make operations on a Google Spreadsheet you will need an authentication token. There is a sample console OAuth token generator available in ActiveRecord::Gsheets::Oauth
 
 ```ruby
-  authenticator = Gsheets::Oauth.new(client_id: CLIENT_ID, client_secret: CLIENT_SECRET)
+  authenticator = Gsheets::Oauth::Offline.new(CLIENT_ID, CLIENT_SECRET)
   uri = authenticator.get_authentication_uri
 
   # open uri.to_s in your browser and copy the code
 
   code = $stdin.gets.chomp
   access_token = authenticator.get_access_token(authentication_code: code)
+  refresh_token = authenticator.get_refresh_token(authentication_code: code)
+
+  # or alternatively, if you already have a refresh token:
+  # access_token = authenticator.get_access_token(refresh_token: refresh_token)
+```
+
+### Configuration
+
+Save the configuration either in an environment variable or (not recommended) directly in your `database.yml` file:
+
+```yaml
+development:
+  document: "google document id"
+  client_id: ENV["GOOGLE_CLIENT_ID"]
+  client_secret: ENV["GOOGLE_CLIENT_SECRET"]
+  refresh_token: ENV["GOOGLE_REFRESH_TOKEN"]
 ```
 
 ## Development
