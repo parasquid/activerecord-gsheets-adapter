@@ -22,7 +22,32 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Use it just like any other ActiveRecord adapter, with a few caveats.
+
+### Mapping
+
+| RDBMS    | Google Sheets |
+|----------|---------------|
+| database | document      |
+| table    | sheet         |
+| row      | table_row + 1 |
+| column   | table_row[0]  |
+
+We're using the first row of the sheet as the column headers.
+
+### Getting the an OAuth token from Google
+
+In order to make operations on a Google Spreadsheet you will need an authentication token. There is a sample console OAuth token generator available in ActiveRecord::Gsheets::Oauth
+
+```ruby
+  authenticator = Gsheets::Oauth.new(client_id: CLIENT_ID, client_secret: CLIENT_SECRET)
+  uri = authenticator.get_authentication_uri
+
+  # open uri.to_s in your browser and copy the code
+
+  code = $stdin.gets.chomp
+  access_token = authenticator.get_access_token(authentication_code: code)
+```
 
 ## Development
 

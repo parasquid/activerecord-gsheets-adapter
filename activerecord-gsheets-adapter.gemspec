@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_dependency "activerecord", "~> 4.2"
+  spec.add_dependency "signet", "~> 0.6.1"
 end
