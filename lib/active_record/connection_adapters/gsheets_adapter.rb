@@ -19,8 +19,22 @@ module ActiveRecord
   end
 
   module ConnectionAdapters
+    class AbstractAdapterInterface
+      def initialize(connection, logger = nil, pool = nil) #:nodoc:
+        super()
 
-    class GsheetsAdapter < AbstractAdapter
+        @connection          = connection
+        @owner               = nil
+        @instrumenter        = ActiveSupport::Notifications.instrumenter
+        @logger              = logger
+        @pool                = pool
+        @schema_cache        = SchemaCache.new self
+        @visitor             = nil
+        @prepared_statements = false
+      end
+    end
+
+    class GsheetsAdapter < AbstractAdapterInterface
       ADAPTER_NAME = "Google Spreadsheets".freeze
       def initialize(connection, logger=nil, connection_options=nil, config={})
         super(connection, logger, config)
