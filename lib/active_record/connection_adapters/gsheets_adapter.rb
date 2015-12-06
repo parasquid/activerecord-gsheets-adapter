@@ -1,7 +1,4 @@
-require "active_support"
-require "active_support/core_ext"
-require "active_record/connection_adapters/abstract_adapter"
-require "active_record/connection_handling"
+require "active_record/connection_adapters/abstract_adapter_interface"
 
 module ActiveRecord
   module ConnectionHandling # :nodoc:
@@ -19,20 +16,6 @@ module ActiveRecord
   end
 
   module ConnectionAdapters
-    class AbstractAdapterInterface
-      def initialize(connection, logger = nil, pool = nil) #:nodoc:
-        super()
-
-        @connection          = connection
-        @owner               = nil
-        @instrumenter        = ActiveSupport::Notifications.instrumenter
-        @logger              = logger
-        @pool                = pool
-        @schema_cache        = SchemaCache.new self
-        @visitor             = nil
-        @prepared_statements = false
-      end
-    end
 
     class GsheetsAdapter < AbstractAdapterInterface
       ADAPTER_NAME = "Google Spreadsheets".freeze
