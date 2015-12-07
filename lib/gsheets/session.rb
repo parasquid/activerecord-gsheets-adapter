@@ -12,7 +12,7 @@ module Gsheets
     private
 
     def get_connection(http_client)
-      http_client.new "#{sheets_api_endpoint}?access_token=#{@auth_code}"
+      http_client.new "#{sheets_api_endpoint}?access_token=#{@auth_code}&alt=json"
     end
 
     def sheets_api_endpoint
