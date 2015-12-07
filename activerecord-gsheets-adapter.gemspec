@@ -28,4 +28,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", "~> 4.2"
   spec.add_dependency "signet", "~> 0.6.1"
+  spec.add_dependency "hurley", "~> 0.2"
+  spec.add_dependency "nori", "~> 2.6.0"
 end
