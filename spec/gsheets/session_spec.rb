@@ -16,18 +16,45 @@ describe Gsheets::Session do
     end
   end
 
-  context "retrieve the document" do
+  context "retrieval" do
     Given(:session_class) { Gsheets::Session }
-    Given(:connection) { double("connection", get: "{}") }
-    Given(:http_client) { double("http_client", new: connection) }
+    Given(:session) { double("session", get: "{}") }
+    Given(:http_client) { double("http_client", new: session) }
     Given(:session_instance) { session_class.new(auth_code: code, http_client: http_client) }
     Given(:code) { "auth_code" }
-    context "in cell format" do
-      Given(:id) { "id" }
-      When(:results) { session_instance.get_cells(id: id) }
+    Given(:id) { "id" }
+
+    context "connection" do
+      When(:conn) { session_instance.connection }
+      Then { conn != nil }
+      Then { expect(http_client).to have_received(:new).with(/access_token/) }
+    end
+
+    context "worksheets" do
+      When(:results) { session_instance.get_worksheets(id: id) }
       Then { results != nil }
-      Then { expect(connection).to have_received(:get).with(/cells/) }
+      Then { expect(session).to have_received(:get).with(/worksheets/) }
+    end
+
+    context "documents" do
+      context "in cell format" do
+        When(:results) { session_instance.get_cells(id: id) }
+        Then { results != nil }
+        Then { expect(session).to have_received(:get).with(/cells/) }
+      end
+
+      context "passed in options" do
+        When(:results) { session_instance.get_cells(id: id, options:["min-row=1", "max-row=1"]) }
+        Then { results != nil }
+        Then { expect(session).to have_received(:get).with(/min-row=1/) }
+        Then { expect(session).to have_received(:get).with(/max-row=1/) }
+      end
+
+      context "can pass in the grid id" do
+        Given(:grid_id) { "grid_id" }
+        When(:results) { session_instance.get_cells(id: id, grid_id: grid_id) }
+        Then { expect(session).to have_received(:get).with(Regexp.new(grid_id))}
+      end
     end
   end
-
 end
