@@ -13,8 +13,11 @@ module Gsheets
     private
 
     def cells_first_row
-      #TODO: set cache expiry
-      @cells_first_row ||= JSON.parse(@session.get_cells(id: @id, grid_id: @grid_id, options:["min-row=1", "max-row=1"]).body)
+      JSON.parse(@session.get_cells(id: @id, grid_id: @grid_id, options: header_row).body)
+    end
+
+    def header_row
+      ["min-row=1", "max-row=1"]
     end
   end
 end

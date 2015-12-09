@@ -24,8 +24,7 @@ module Gsheets
     private
 
     def document
-      #TODO: set cache expiry
-      @document ||= JSON.parse(@session.get_worksheets(id: @id).body)
+      JSON.parse(@session.get_worksheets(id: @id).body)
     end
 
     def get_title(entry)

@@ -43,6 +43,12 @@ describe Gsheets::Session do
         Then { expect(session).to have_received(:get).with(/cells/) }
       end
 
+      context "in list format" do
+        When(:results) { session_instance.get_list(id: id) }
+        Then { results != nil }
+        Then { expect(session).to have_received(:get).with(/list/) }
+      end
+
       context "passed in options" do
         When(:results) { session_instance.get_cells(id: id, options:["min-row=1", "max-row=1"]) }
         Then { results != nil }

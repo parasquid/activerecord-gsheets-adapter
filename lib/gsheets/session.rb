@@ -12,6 +12,10 @@ module Gsheets
       connection.get "cells/#{id}/#{grid_id}/private/full?#{options.join('&')}"
     end
 
+    def get_list(id:, grid_id: "default", options:[])
+      connection.get "list/#{id}/#{grid_id}/private/full?#{options.join('&')}"
+    end
+
     def get_worksheets(id:)
       connection.get "worksheets/#{id}/private/full"
     end
